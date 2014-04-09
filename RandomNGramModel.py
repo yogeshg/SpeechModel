@@ -2,17 +2,16 @@ import nltk
 from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
                               MLEProbDist)
 from nltk.probability import LidstoneProbDist, WittenBellProbDist
-import numpy, random, re, time
+import numpy, random, re
 
-import kalki
+import kalki					#TODO: in constructor
 
-STARTWORD	= kalki.STARTWORD
-STOPWORD	= kalki.STOPWORD
+STARTWORD	= kalki.STARTWORD	# field
+STOPWORD	= kalki.STOPWORD	# field
 TEXT	= kalki.TEXT
 
-unigrams = []
+unigrams = []					# field (or not?)
 lengths  = []
-
 
 for line in TEXT:
 	words = line.split()
@@ -21,28 +20,26 @@ for line in TEXT:
 
 # estimator = None
 # estimator = lambda fdist, bins: MLEProbDist(fdist)
-estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
+estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)			# field
 # estimator = lambda fdist, bins: WittenBellProbDist(fdist, 0.2)
 
-model1 = nltk.model.ngram.NgramModel(1, unigrams, estimator=estimator)
-
-model2 = nltk.model.ngram.NgramModel(2, unigrams, estimator=estimator)
-
-model3 = nltk.model.ngram.NgramModel(3, unigrams, estimator=estimator)
+model1 = nltk.model.ngram.NgramModel(1, unigrams, estimator=estimator)	# field
+model2 = nltk.model.ngram.NgramModel(2, unigrams, estimator=estimator)	# field
+model3 = nltk.model.ngram.NgramModel(3, unigrams, estimator=estimator)	# field
 
 def musigma( arr ):
 	arr = numpy.array(arr)
 	return (arr.mean(), arr.std())
 
-(mu, sigma) = musigma(lengths)
+(mu, sigma) = musigma(lengths)	# field
 
 lambda1 = 0.20
 lambda2 = 0.35
 lambda3 = 0.45
 
-theta1 = lambda1
-theta2 = theta1 + lambda2
-theta3 = theta2 + lambda3
+theta1 = lambda1			# field
+theta2 = theta1 + lambda2	# field
+theta3 = theta2 + lambda3	# field
 
 def generateDialog():
 	x = random.normalvariate(0,1)
@@ -58,7 +55,7 @@ def generateDialog():
 		elif r <= theta3:
 			dia = model3.generate(1,context=dia)
 		if dia[-1] == '.':
-			dia = dia[0:-1]
+			dia = dia[0:-1]							#FIXME: Why this hack? :O
 	return dia
 
 def postprocess(dia):
@@ -73,5 +70,6 @@ def main():
 if __name__ == '__main__':
 	main()
 
-#FIXME analyze perprlexity
-#FIXME make class
+#TODO analyze perprlexity
+#TODO make class
+#TODO work on argo
